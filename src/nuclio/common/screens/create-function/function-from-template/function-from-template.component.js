@@ -258,8 +258,11 @@
          * @returns {boolean}
          */
         function filterByRuntime(template) {
-            return ctrl.selectedRuntimeFilter.id === 'all' ||
-                template.rendered.spec.runtime === ctrl.selectedRuntimeFilter.id;
+            if (ctrl.selectedRuntimeFilter.id === 'all') {
+                return ['python:2.7', 'python:3.6', 'java', 'nodejs', 'shell'].includes(template.rendered.spec.runtime);
+            } else {
+                return template.rendered.spec.runtime === ctrl.selectedRuntimeFilter.id;
+            }
         }
 
         /**
@@ -362,7 +365,7 @@
                 {
                     id: 'golang',
                     name: 'Go',
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'python:2.7',
@@ -377,7 +380,7 @@
                 {
                     id: 'dotnetcore',
                     name: '.NET Core',
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'java',
@@ -397,7 +400,7 @@
                 {
                     id: 'ruby',
                     name: 'Ruby',
-                    visible: true
+                    visible: false
                 }
             ];
         }
