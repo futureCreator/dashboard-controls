@@ -73,9 +73,11 @@
         "COULD_NOT_READ_FILE": "Could not read file...",
         "CREATE_FUNCTION_EVENT": "Error occurred while creating the new function event.",
         "CREATE_UPDATE_FUNCTION_EVENT": "Error occurred while creating/updating the new function event.",
+        "DELETE_API_GW_FUNCTION": "Cannot delete the function while it is being used by an API gateway (\"{{apiGatewayName}}\").",
         "DELETE_EVENTS": "Oops: Unknown error occurred while deleting events",
         "DELETE_FUNCTION": "Unknown error occurred while deleting the function.",
         "DELETE_PROJECT": "Unknown error occurred while deleting the project (try deleting its functions first).",
+        "DISABLE_API_GW_FUNCTION": "Cannot disable the function while it is being used by an API gateway (\"{{apiGatewayName}}\").",
         "EXPORT_PROJECT": "Oops: Unknown error occurred while exporting the project",
         "EXPORT_PROJECTS": "Oops: Unknown error occurred while exporting projects",
         "FUNCTION_NAME_ALREADY_IN_USE": "Function name already in use. Rename and try again.",
@@ -187,6 +189,7 @@
         "ENTER_WORKER_ALLOCATOR_NAME": "Enter worker allocator name...",
         "EVENT_NAME": "Event name...",
         "MIN": "Min...",
+        "MAX_REQUIRED": "Required when min=0",
         "MY_SERVICE_ACCOUNT": "myserviceaccount",
         "PROJECT_NAME": "Project name...",
         "SEARCH_FUNCTIONS": "Search functions...",
@@ -262,7 +265,7 @@
         },
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",
         "IMAGE_NAME": "The name of the function’s container image",
-        "PROJECT_FUNCTION_NAME": "Name must be 1-63 characters long, must consist of lower case alphanumeric characters or hyphen, start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123').",
+        "INACTIVITY_WINDOW": "Applicable only when setting the minimum number of replicas to 0 to enable scale-to-zero",
         "LABELS": {
             "HEAD": "Kubernetes labels",
             "REST": "for specifying object attributes that are meaningful and relevant to users"
@@ -285,12 +288,14 @@
             "ACCESS_KEY_ID": "An S3 access key ID for download authentication"
         },
         "STOP_FUNCTION": "Stop function",
-        "TARGET_CPU": "Exceeding this threshold will increase the number of replicas",
+        "TARGET_CPU": "Applicable only when minimum and maximum number of replicas are not empty, are not equal to each other, and the maximum is greater than 1",
         "URL": "A URL for downloading the archive file",
+        "USED_BY_API_GATEWAY": "Used by API gateway: \"{{apiGatewayName}}\"",
         "V3IO": "A directory in an Iguazio Data Science Platform data container",
         "V3IO_ACCESS_KEY": "An Iguazio Data Science Platform access key",
         "VOLUMES": "Volumes that define data paths and the required information for accessing the data from the function",
-        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)"
+        "WORK_DIR": "The relative path to the function-code directory within the extracted archive-file directory (default: \"/\" — the root directory)",
+        "WORKER_AVAILABILITY_TIMEOUT_MILLISECONDS_DESCRIPTION": "The number of milliseconds to wait for a worker if one is not available.\nEmpty = system default"
     },
     "TOPIC": "Topic",
     "TOPICS": "Topics",

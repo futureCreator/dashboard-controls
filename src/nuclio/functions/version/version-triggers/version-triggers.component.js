@@ -16,6 +16,14 @@
         var lng = i18next.language;
         var uniqueClasses = ['http'];
 
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
+
         ctrl.isCreateModeActive = false;
         ctrl.validationRules = [];
         ctrl.triggers = [];
@@ -69,7 +77,7 @@
             ctrl.classList = FunctionsService.getClassesList('trigger');
             ctrl.validationRules = {
                 host: {
-                    key: ValidatingPatternsService.getValidationRules('k8s.wildcardDns1123Subdomain'),
+                    key: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain')
                 }
             };
 
@@ -222,8 +230,8 @@
                 triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
             }
 
-            if (angular.isDefined(selectedItem.workerAvailabilityTimeoutMilliseconds)) {
-                triggerItem.workerAvailabilityTimeoutMilliseconds = Number(selectedItem.workerAvailabilityTimeoutMilliseconds);
+            if (angular.isNumber(selectedItem.workerAvailabilityTimeoutMilliseconds)) {
+                triggerItem.workerAvailabilityTimeoutMilliseconds = selectedItem.workerAvailabilityTimeoutMilliseconds;
             }
 
             if (angular.isDefined(selectedItem.username)) {

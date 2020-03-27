@@ -13,7 +13,10 @@
         </div>
 
         <div class="common-table-body">
-            <div class="igz-scrollable-container" data-ng-scrollbars>
+            <div class="igz-scrollable-container"
+                 data-ng-scrollbars
+                 data-ng-scrollbars-config="$ctrl.scrollConfig"
+                 data-igz-extend-background>
                 <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers"
                                     data-item="trigger"
                                     data-type="trigger"

@@ -11,7 +11,7 @@
             controller: NclVersionConfigurationResourcesController
         });
 
-    function NclVersionConfigurationResourcesController($timeout, $rootScope, $scope, $i18next, i18next, lodash,
+    function NclVersionConfigurationResourcesController($i18next, $timeout, $rootScope, $scope, i18next, lodash,
                                                         ConfigService) {
         var ctrl = this;
         var lng = i18next.language;
@@ -23,6 +23,8 @@
             root: 1000,
             power: 3
         };
+        var scaleResourcesCopy = [];
+        var scaleToZero = {};
 
         ctrl.cpuDropdownOptions = [
             {
@@ -72,6 +74,7 @@
             { id: 'eb',    name: 'EB',    unit: 'E',  root: 1000, power: 6 },
             { id: 'eib',   name: 'EiB',   unit: 'Ei', root: 1024, power: 6 }
         ];
+        ctrl.windowSizeSlider = {};
 
         ctrl.isDemoMode = ConfigService.isDemoMode;
 
@@ -80,13 +83,13 @@
 
         ctrl.numberInputCallback = numberInputCallback;
         ctrl.sliderInputCallback = sliderInputCallback;
-        ctrl.toggleTargetCpu = toggleTargetCpu;
 
         ctrl.cpuDropdownCallback = cpuDropdownCallback;
         ctrl.memoryInputCallback = memoryInputCallback;
         ctrl.memoryDropdownCallback = memoryDropdownCallback;
         ctrl.inputGpuValueCallback = inputGpuValueCallback;
         ctrl.inputValueCallback = inputValueCallback;
+        ctrl.isInactivityWindowShown = isInactivityWindowShown;
 
         //
         // Hook methods
@@ -97,10 +100,12 @@
          */
         function onInit() {
             initParametersData();
-            initSlider();
+            initTargetCpuSlider();
 
             ctrl.minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
             ctrl.maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+
+            initScaleToZeroData();
 
             $timeout(function () {
                 setFormValidity();
@@ -196,6 +201,14 @@
         }
 
         /**
+         * Checks whether the inactivity window can be shown
+         * @returns {boolean}
+         */
+        function isInactivityWindowShown() {
+            return ConfigService.isDemoMode() && lodash.get(scaleToZero, 'mode') === 'enabled';
+        }
+
+        /**
          * Memory number input callback
          * @param {number} newData
          * @param {string} field
@@ -264,6 +277,14 @@
 
             lodash.set(ctrl, field, newData);
 
+            if (field === 'minReplicas' && isInactivityWindowShown()) {
+                updateScaleToZeroParameters();
+            }
+
+            if (lodash.includes(['minReplicas', 'maxReplicas'], field)) {
+                updateTargetCpuSlider();
+            }
+
             ctrl.onChangeCallback();
         }
 
@@ -280,21 +301,6 @@
             }
 
             ctrl.onChangeCallback();
-        }
-
-        /**
-         * Sets slider value & unit and updates the corresponding model according to its enabled/disabled state.
-         */
-        function toggleTargetCpu() {
-            if (ctrl.targetCpuSliderConfig.options.disabled) {
-                lodash.unset(ctrl.version, 'spec.targetCPU');
-                ctrl.targetCpuValueUnit = '';
-                ctrl.targetCpuSliderConfig.valueLabel = 'disabled';
-            } else {
-                lodash.set(ctrl.version, 'spec.targetCPU', ctrl.targetCpuSliderConfig.value);
-                ctrl.targetCpuSliderConfig.valueLabel = String(ctrl.targetCpuSliderConfig.value);
-                ctrl.targetCpuValueUnit = '%';
-            }
         }
 
         //
@@ -421,31 +427,60 @@
         }
 
         /**
-         * Inits data for sliders
+         * Initializes Target CPU slider.
          */
-        function initSlider() {
-            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU');
-
-            ctrl.targetCpuValueUnit = '%';
+        function initTargetCpuSlider() {
+            ctrl.targetCpuValueUnit = '';
             ctrl.targetCpuSliderConfig = {
-                value: lodash.defaultTo(targetCpuValue, 75),
-                valueLabel: lodash.defaultTo(targetCpuValue, '75'),
+                value: 75,
+                valueLabel: 'disabled',
                 pow: 0,
                 unitLabel: '%',
                 labelHelpIcon: false,
                 options: {
-                    disabled: lodash.isNil(targetCpuValue),
+                    disabled: true,
                     floor: 1,
                     id: 'targetCPU',
                     ceil: 100,
                     step: 1,
-                    showSelectionBar: true,
-                    onChange: null,
-                    onEnd: null
+                    showSelectionBar: true
                 }
             };
 
-            toggleTargetCpu();
+            updateTargetCpuSlider();
+        }
+
+        /**
+         * Updates Target CPU slider state (enabled/disabled) and display value.
+         */
+        function updateTargetCpuSlider() {
+            var minReplicas = lodash.get(ctrl.version, 'spec.minReplicas');
+            var maxReplicas = lodash.get(ctrl.version, 'spec.maxReplicas');
+            var disabled = !lodash.isNumber(minReplicas) || !lodash.isNumber(maxReplicas) || maxReplicas <= 1 ||
+                minReplicas === maxReplicas;
+            var targetCpuValue = lodash.get(ctrl.version, 'spec.targetCPU', 75);
+
+            ctrl.targetCpuValueUnit = disabled ? '' : '%';
+            lodash.merge(ctrl.targetCpuSliderConfig, {
+                value: targetCpuValue,
+                valueLabel: disabled ? 'disabled' : targetCpuValue,
+                options: {
+                    disabled: disabled
+                }
+            });
+        }
+
+        /**
+         * Initializes data for "Scale to zero" section
+         */
+        function initScaleToZeroData() {
+            scaleToZero = lodash.get(ConfigService, 'nuclio.scaleToZero', {});
+
+            if (!lodash.isEmpty(scaleToZero)) {
+                scaleResourcesCopy = lodash.get(ctrl.version, 'spec.scaleToZero.scaleResources', scaleToZero.scaleResources);
+
+                updateScaleToZeroParameters();
+            }
         }
 
         /**
@@ -474,6 +509,57 @@
                 if (angular.isDefined(ctrl.resourcesForm[field])) {
                     ctrl.resourcesForm[field].$dirty = true;
                     ctrl.resourcesForm[field].$$element.scope().$ctrl.numberInputChanged = true;
+                }
+            }
+        }
+
+        /**
+         * Updates parameters for "Scale to zero" section
+         */
+        function updateScaleToZeroParameters() {
+            if (!ConfigService.isDemoMode()) {
+                return;
+            }
+
+            lodash.defaultsDeep(ctrl.version, {
+                ui: {
+                    scaleToZero: {
+                        scaleResources: scaleResourcesCopy
+                    }
+                }
+            });
+
+            var scaleResources = lodash.get(ctrl.version, 'ui.scaleToZero.scaleResources');
+
+            if (ctrl.minReplicas === 0) {
+                lodash.set(ctrl.version, 'spec.scaleToZero.scaleResources', scaleResources);
+            } else {
+                lodash.unset(ctrl.version, 'spec.scaleToZero');
+            }
+
+            var maxWindowSize = lodash.chain(scaleResources)
+                .maxBy(function (value) {
+                    return parseInt(value.windowSize);
+                })
+                .get('windowSize')
+                .value();
+
+            ctrl.windowSizeSlider = {
+                value: maxWindowSize,
+                options: {
+                    stepsArray: scaleToZero.inactivityWindowPresets,
+                    showTicks: true,
+                    showTicksValues: true,
+                    disabled: ctrl.minReplicas > 0,
+                    onChange: function (_, newValue) {
+                        lodash.forEach(scaleResources, function (value) {
+                            value.windowSize = newValue;
+                        });
+
+                        if (ctrl.minReplicas === 0) {
+                            lodash.set(ctrl.version, 'spec.scaleToZero.scaleResources', scaleResources);
+                        }
+                    }
                 }
             }
         }
