@@ -26,12 +26,14 @@
 
         ctrl.duplicateFunctionForm = {};
         ctrl.functionData = {};
+        ctrl.functionFromTemplateForm = {};
         ctrl.functionName = '';
         ctrl.inputModelOptions = {
             debounce: {
                 'default': 300
             }
         };
+        ctrl.nameMaxLength = Infinity;
         ctrl.page = {};
         ctrl.runtimeFilters = [];
         ctrl.searchQuery = '';
@@ -69,7 +71,8 @@
          * Initialization method
          */
         function onInit() {
-            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1123Label');
+            ctrl.nameMaxLength = ValidatingPatternsService.getMaxLength('k8s.dns1035Label');
+            ctrl.validationRules = ValidatingPatternsService.getValidationRules('k8s.dns1035Label');
             ctrl.toggleSplashScreen({ value: true });
 
             initFunctionData();

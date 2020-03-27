@@ -183,9 +183,10 @@
                             name: 'workerAvailabilityTimeoutMilliseconds',
                             pattern: 'number',
                             type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
+                            allowEmpty: true,
+                            min: 1,
+                            defaultValue: '',
+                            placeholder: $i18next.t('common:DEFAULT', {lng: i18next.language})
                         },
                         attributes: [
                             {
@@ -288,9 +289,10 @@
                             name: 'workerAvailabilityTimeoutMilliseconds',
                             pattern: 'number',
                             type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
+                            allowEmpty: true,
+                            min: 1,
+                            defaultValue: '',
+                            placeholder: $i18next.t('common:DEFAULT', {lng: i18next.language})
                         },
                         attributes: [
                             {
@@ -329,14 +331,6 @@
                             min: 1,
                             max: 100000,
                             defaultValue: 1
-                        },
-                        workerAvailabilityTimeoutMilliseconds: {
-                            name: 'workerAvailabilityTimeoutMilliseconds',
-                            pattern: 'number',
-                            type: 'number-input',
-                            allowEmpty: false,
-                            min: 0,
-                            defaultValue: 0
                         },
                         attributes: [
                             {
@@ -580,13 +574,7 @@
                     id: 'delete',
                     icon: 'igz-icon-trash',
                     active: true,
-                    confirm: {
-                        message: $i18next.t('functions:DELETE_FUNCTIONS_CONFIRM', {lng: lng}),
-                        description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}),
-                        yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
-                        noLabel: $i18next.t('common:CANCEL', {lng: lng}),
-                        type: 'nuclio_alert'
-                    }
+                    confirm: {}
                 },
                 {
                     label: $i18next.t('common:DUPLICATE', {lng: lng}),

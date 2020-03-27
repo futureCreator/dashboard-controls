@@ -115,6 +115,7 @@
          */
         function onInit() {
             lodash.defaults(ctrl, {
+                autoComplete: 'off',
                 hideCounter: false,
                 inputModelOptions: {},
                 inputValue: '',
@@ -157,10 +158,6 @@
                 $timeout(function () {
                     $element.find('.field')[0].focus();
                 }, timer);
-            }
-
-            if (!lodash.isEmpty(ctrl.validationRules)) {
-                PreventDropdownCutOffService.preventDropdownCutOff($element, '.validation-pop-up');
             }
         }
 
@@ -356,12 +353,16 @@
 
             if (event.target === validationIcon) {
                 if (!lodash.isEmpty(ctrl.validationRules)) {
-                    $timeout(function () {
-                        $element.find('.field')[0].focus();
+                    ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
 
+                    $timeout(function () {
+                        $element.find('.field').focus();
                         ctrl.inputFocused = true;
-                        ctrl.isValidationPopUpShown = !ctrl.isValidationPopUpShown;
-                    });
+                        var popUp = $element.find('.validation-pop-up-wrapper');
+                        popUp.css({
+                            'height': popUp.outerHeight() > 0 ? popUp.outerHeight() : 'auto'
+                        });
+                    })
                 }
             } else if (!event.target.closest('.input-field')) {
                 ctrl.isValidationPopUpShown = false;

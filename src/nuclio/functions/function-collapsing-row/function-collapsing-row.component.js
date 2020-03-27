@@ -23,6 +23,8 @@
                                                 ActionCheckboxAllService, ConfigService, DialogsService,
                                                 ExportService, FunctionsService, NuclioHeaderService, TableSizeService) {
         var ctrl = this;
+
+        var apiGateways = [];
         var tempFunctionCopy = null;
         var interval = null;
         var lng = i18next.language;
@@ -104,6 +106,8 @@
                 }
             });
 
+            apiGateways = lodash.get(ctrl.function, 'status.apiGateways', []);
+
             initFunctionActions();
         }
 
@@ -133,7 +137,7 @@
                 setStatusIcon();
 
                 ctrl.invocationUrl = {
-                    text: lodash.isEmpty(externalAddress) ? 'N/A'                                                :
+                    text: lodash.isEmpty(externalAddress) ? $i18next.t('common:N_A', {lng: lng})                 :
                           lodash.toFinite(httpPort) === 0 ? $i18next.t('functions:NOT_YET_DEPLOYED', {lng: lng}) :
                                                             'http://' + externalAddress + ':' + httpPort,
                     valid: !lodash.isEmpty(externalAddress) && lodash.toFinite(httpPort) !== 0
@@ -227,10 +231,12 @@
             event.preventDefault();
             event.stopPropagation();
 
-            if (ctrl.function.spec.disable) {
-                enableFunction();
-            } else {
+            if (!ctrl.function.spec.disable && !lodash.isEmpty(apiGateways)) {
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DISABLE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+            } else if (!ctrl.function.spec.disable) {
                 disableFunction();
+            } else {
+                enableFunction();
             }
         }
 
@@ -258,18 +264,22 @@
          * @returns {Promise}
          */
         function deleteFunction() {
-            ctrl.isSplashShowed.value = true;
+            if (lodash.isEmpty(apiGateways)) {
+                ctrl.isSplashShowed.value = true;
 
-            return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
-                .then(function () {
-                    lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
-                })
-                .catch(function (error) {
-                    ctrl.isSplashShowed.value = false;
-                    var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
+                return ctrl.handleDeleteFunction({functionData: ctrl.function.metadata})
+                    .then(function () {
+                        lodash.remove(ctrl.functionsList, ['metadata.name', ctrl.function.metadata.name]);
+                    })
+                    .catch(function (error) {
+                        ctrl.isSplashShowed.value = false;
+                        var defaultMsg = $i18next.t('functions:ERROR_MSG.DELETE_FUNCTION', {lng: lng});
 
-                    return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
-                });
+                        return DialogsService.alert(lodash.get(error, 'data.error', defaultMsg));
+                    });
+            } else {
+                DialogsService.alert($i18next.t('functions:ERROR_MSG.DELETE_API_GW_FUNCTION', {lng: lng, apiGatewayName: apiGateways[0]}));
+            }
         }
 
         /**
@@ -352,8 +362,14 @@
 
             var deleteAction = lodash.find(ctrl.functionActions, {'id': 'delete'});
 
-            if (!lodash.isNil(deleteAction)) {
-                deleteAction.confirm.message = $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?';
+            if (!lodash.isNil(deleteAction) && lodash.isEmpty(apiGateways)) {
+                deleteAction.confirm = {
+                    message: $i18next.t('functions:DELETE_FUNCTION', {lng: lng}) + ' “' + ctrl.function.metadata.name + '”?',
+                    description: $i18next.t('functions:DELETE_FUNCTION_DESCRIPTION', {lng: lng}),
+                    yesLabel: $i18next.t('common:YES_DELETE', {lng: lng}),
+                    noLabel: $i18next.t('common:CANCEL', {lng: lng}),
+                    type: 'nuclio_alert'
+                }
             }
         }
 

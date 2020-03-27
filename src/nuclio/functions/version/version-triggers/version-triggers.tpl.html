@@ -13,7 +13,10 @@
         </div>
 
         <div class="common-table-body">
-            <div class="igz-scrollable-container" data-ng-scrollbars>
+            <div class="igz-scrollable-container"
+                 data-ng-scrollbars
+                 data-ng-scrollbars-config="$ctrl.scrollConfig"
+                 data-igz-extend-background>
                 <ncl-collapsing-row data-ng-repeat="trigger in $ctrl.triggers"
                                     data-item="trigger"
                                     data-type="trigger"
@@ -22,6 +25,7 @@
                                    data-item="trigger"
                                    data-class-list="$ctrl.classList"
                                    data-type="trigger"
+                                   data-validation-rules="$ctrl.validationRules"
                                    data-default-fields="$ctrl.defaultFields"
                                    data-on-select-class-callback="$ctrl.checkClassUniqueness()"
                                    data-on-submit-callback="$ctrl.editTriggerCallback(item)">

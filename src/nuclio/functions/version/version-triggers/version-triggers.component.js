@@ -11,12 +11,21 @@
         });
 
     function NclVersionTriggersController($rootScope, $timeout, $i18next, i18next, lodash, DialogsService,
-                                          FunctionsService, VersionHelperService) {
+                                          FunctionsService, ValidatingPatternsService, VersionHelperService) {
         var ctrl = this;
         var lng = i18next.language;
         var uniqueClasses = ['http'];
 
+        ctrl.scrollConfig = {
+            axis: 'y',
+            advanced: {
+                autoScrollOnFocus: false,
+                updateOnContentResize: true
+            }
+        };
+
         ctrl.isCreateModeActive = false;
+        ctrl.validationRules = [];
         ctrl.triggers = [];
 
         ctrl.$onInit = onInit;
@@ -66,6 +75,11 @@
                 return triggersItem;
             });
             ctrl.classList = FunctionsService.getClassesList('trigger');
+            ctrl.validationRules = {
+                host: {
+                    key: ValidatingPatternsService.getValidationRules('k8s.dns1123Subdomain')
+                }
+            };
 
             $timeout(function () {
                 ctrl.defaultFields = {
@@ -216,8 +230,8 @@
                 triggerItem.maxWorkers = Number(selectedItem.maxWorkers);
             }
 
-            if (angular.isDefined(selectedItem.workerAvailabilityTimeoutMilliseconds)) {
-                triggerItem.workerAvailabilityTimeoutMilliseconds = Number(selectedItem.workerAvailabilityTimeoutMilliseconds);
+            if (angular.isNumber(selectedItem.workerAvailabilityTimeoutMilliseconds)) {
+                triggerItem.workerAvailabilityTimeoutMilliseconds = selectedItem.workerAvailabilityTimeoutMilliseconds;
             }
 
             if (angular.isDefined(selectedItem.username)) {
