@@ -198,7 +198,7 @@
                     sourceCode: 'cGFja2FnZSBtYWluDQoNCmltcG9ydCAoDQogICAgImdpdGh1Yi5jb20vbnVjbGlvL251Y2xpby1zZGstZ28iDQo' +
                     'pDQoNCmZ1bmMgSGFuZGxlcihjb250ZXh0ICpudWNsaW8uQ29udGV4dCwgZXZlbnQgbnVjbGlvLkV2ZW50KSAoaW50ZXJmYWNle3' +
                     '0sIGVycm9yKSB7DQogICAgcmV0dXJuIG5pbCwgbmlsDQp9', // source code in base64
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'python:2.7',
@@ -220,7 +220,7 @@
                     '4gbmV3IFJlc3BvbnNlKCkNCiAgICAgICAgew0KICAgICAgICAgICAgU3RhdHVzQ29kZSA9IDIwMCwNCiAgICAgICAgICAgIENvb' +
                     'nRlbnRUeXBlID0gImFwcGxpY2F0aW9uL3RleHQiLA0KICAgICAgICAgICAgQm9keSA9ICIiDQogICAgICAgIH07DQogICAgfQ0K' +
                     'fQ==', // source code in base64
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'java',
@@ -249,7 +249,7 @@
                     id: 'ruby',
                     name: 'Ruby',
                     sourceCode: 'ZGVmIGhhbmRsZXIoY29udGV4dCwgZXZlbnQpDQplbmQ=', // source code in base64
-                    visible: true
+                    visible: false
                 }
             ];
         }
@@ -259,7 +259,7 @@
          * @returns {object} default runtime
          */
         function getDefaultRuntime() {
-            return lodash.find(ctrl.runtimes, ['id', 'golang']);
+            return lodash.find(ctrl.runtimes, ['id', 'python:3.6']);
         }
 
         /**
