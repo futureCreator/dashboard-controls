@@ -213,7 +213,7 @@
                     <div data-ng-if="$ctrl.selectedEntryType.id === 'github'"
                          class="ncl-code-entry-url">
                         <div class="field-label">
-                            <span>{{ 'functions:TOKEN' | i18next }}</span>
+                            <span class="asterisk">{{ 'functions:TOKEN' | i18next }}</span>
                             <igz-more-info data-description="{{ 'functions:TOOLTIP.GITHUB.TOKEN' | i18next }}"></igz-more-info>
                         </div>
                         <igz-validating-input-field data-field-type="input"
@@ -221,7 +221,7 @@
                                                     data-input-value="$ctrl.githubToken"
                                                     data-is-focused="false"
                                                     data-form-object="$ctrl.versionCodeForm"
-                                                    data-validation-is-required="false"
+                                                    data-validation-is-required="true"
                                                     data-placeholder-text="{{ 'functions:PLACEHOLDER.ENTER_TOKEN' | i18next }}"
                                                     data-update-data-callback="$ctrl.onChangeGithubToken(newData)"
                                                     class="nuclio-validating-input">

@@ -265,9 +265,9 @@
         "DISABLE_CACHE": "Build the function's Docker image from scratch without reusing any previously built Docker image layers",
         "DISABLED_FUNCTION": "Only running functions can be tested",
         "GITHUB": {
-            "BRANCH": "The GitHub repository branch from which to download the function code",
-            "TOKEN": "A GitHub access token for download authentication",
-            "URL": "The URL of the GitHub repository that contains the function code",
+            "BRANCH": "The GitHub repository branch from which to download the function code. If GitLab, it is a tag, branch, reference, or SHA",
+            "TOKEN": "A GitHub(GitLab) access token for download authentication",
+            "URL": "The URL of the GitHub(GitLab) repository that contains the function code",
             "WORK_DIR": "The relative path to the function-code directory within the configured repository branch (default: \"/\" — the root directory)"
         },
         "GPU_LIMIT": "Maximum number of GPUs per replica. Note that while the function is enabled it monopolizes the allocated GPUs even when they're not in use.",

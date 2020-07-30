@@ -1,5 +1,5 @@
 {
-    "name": "iguazio.dashboard-controls",
+    "name": "iguazio.dashboard-controls-custom",
     "version": "0.19.0",
     "main": "dist/js/iguazio.dashboard-controls.js",
     "description": "Collection of resources (such as CSS styles, fonts and images) and AngularJs 1.x components and services to share among different Iguazio repos.",
@@ -77,14 +77,5 @@
         "karma": "^4.4.1",
         "karma-chrome-launcher": "^3.1.0",
         "karma-jasmine": "^3.1.1"
-    },
-    "autoupdate": {
-        "source": "git",
-        "target": "https://github.com/iguazio/dashboard-controls.git",
-        "basePath": "",
-        "files": [
-            "dist/js/iguazio.dashboard-controls.js",
-            "dist/less/iguazio.dashboard-controls.less"
-        ]
     }
 }
