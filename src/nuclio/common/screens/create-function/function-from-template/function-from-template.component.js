@@ -367,7 +367,7 @@
                 {
                     id: 'golang',
                     name: 'Go',
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'python:2.7',
@@ -382,7 +382,7 @@
                 {
                     id: 'dotnetcore',
                     name: '.NET Core',
-                    visible: true
+                    visible: false
                 },
                 {
                     id: 'java',
@@ -402,7 +402,7 @@
                 {
                     id: 'ruby',
                     name: 'Ruby',
-                    visible: true
+                    visible: false
                 }
             ];
         }
