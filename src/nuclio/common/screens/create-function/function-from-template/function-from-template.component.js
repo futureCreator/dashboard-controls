@@ -263,8 +263,11 @@
          * @returns {boolean}
          */
         function filterByRuntime(template) {
-            return ctrl.selectedRuntimeFilter.id === 'all' ||
-                template.rendered.spec.runtime === ctrl.selectedRuntimeFilter.id;
+            if (ctrl.selectedRuntimeFilter.id === 'all') {
+                return ['python:2.7', 'python:3.6', 'java', 'nodejs', 'shell'].includes(template.rendered.spec.runtime);
+            } else {
+                return template.rendered.spec.runtime === ctrl.selectedRuntimeFilter.id;
+            }
         }
 
         /**
