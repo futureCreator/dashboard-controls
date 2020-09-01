@@ -286,6 +286,7 @@
                     }],
                     handler: FunctionsService.getHandler(ctrl.selectedRuntime.id),
                     runtime: ctrl.selectedRuntime.id,
+                    version: 0,
                     build: {
                         functionSourceCode: ctrl.selectedRuntime.sourceCode
                     }
