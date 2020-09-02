@@ -226,9 +226,6 @@
                 lodash.set(versionCopy, ['metadata', 'labels', 'nuclio.io/project-name'], ctrl.project.metadata.name);
                 lodash.set(versionCopy, 'spec.build.mode', 'alwaysBuild');
 
-                // version test
-                lodash.set(versionCopy, 'spec.version', lodash.get(versionCopy, 'spec.version') + 1);
-
                 ctrl.isTestResultShown = false;
                 ctrl.isDeployResultShown = false;
                 ctrl.rowIsCollapsed.deployBlock = true;
@@ -444,6 +441,7 @@
                                 versionChanged: false
                             };
 
+                            ctrl.version.metadata.resourceVersion = response.metadata.resourceVersion;
                             lodash.assign(ctrl.version.spec, response.spec);
 
                             setInvocationUrl();
